@@ -17,7 +17,7 @@ public class Main {
         // TODO №2: достаточно ли double для хранения дивидендов?
         var sberStockPrice = 13.65;
         var dividends = sberStockPrice * sber.getDividendYield() / 100;
-        System.out.println("Дивиденды SBER: " + dividends); // NOTICE: ожидается 88.725
+        System.out.println("Дивиденды SBER: " + dividends); // NOTICE: ожидается 0.88725
 
         // TODO №3: обсудить сравнение числовых типов
 
