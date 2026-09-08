@@ -20,8 +20,10 @@ public class InstrumentFormatter {
     private InstrumentFormatter() {
     }
 
-    public static String describe(Instrument instrument) {
+    public static String getDescription(Instrument instrument) {
         if (instrument instanceof Stock stock) {
+            // NOTICE: как оно было раньше...
+            // var stock = (Stock) instrument;
             return "Акция, сектор: " + stock.getSector();
         } else if (instrument instanceof Bond bond) {
             return "Облигация, купон: " + bond.getCouponRate() + "%, погашение: " + bond.getMaturityYear();

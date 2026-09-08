@@ -1,30 +1,27 @@
 package academy.backend.market_pulse.model;
 
-import java.math.BigDecimal;
-
+/**
+ * Класс, представляющий облигацию.
+ * Облигация является финансовым инструментом, который характеризуется ставкой купона и годом погашения.
+ */
 public class Bond extends Instrument {
 
-    private final BigDecimal couponRate;
+    // TODO: точно ли тут достаточно double?
+    private final double couponRate;
     private final int maturityYear;
 
     public Bond(String ticker, String name, Currency currency,
-                BigDecimal couponRate, int maturityYear) {
+                double couponRate, int maturityYear) {
         super(ticker, name, currency);
         this.couponRate = couponRate;
         this.maturityYear = maturityYear;
     }
 
-    public BigDecimal getCouponRate() {
+    public double getCouponRate() {
         return couponRate;
     }
 
     public int getMaturityYear() {
         return maturityYear;
-    }
-
-    @Override
-    public String getDescription() {
-        // TODO: описание облигации — купон и год погашения.
-        throw new UnsupportedOperationException("getDescription для Bond");
     }
 }

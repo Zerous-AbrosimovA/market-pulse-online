@@ -34,10 +34,11 @@ public abstract class Instrument {
         return currency;
     }
 
-    public abstract String getDescription();
+    // TODO №1: реализовать метод, возвращающий бизнесовое описание инструмента.
+    // TODO №2: реализовать метод, возвращающий дивиденды инструментов.
 
     @Override
     public String toString() {
-        return ticker + " — " + name + " (" + getDescription() + ")";
+        return "%s(%s)".formatted(getClass().getSimpleName(), ticker);
     }
 }

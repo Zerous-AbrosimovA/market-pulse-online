@@ -1,12 +1,5 @@
 package academy.backend.market_pulse.demo;
 
-import java.math.BigDecimal;
-
-import org.openjdk.jol.info.ClassLayout;
-
-import academy.backend.market_pulse.model.Currency;
-import academy.backend.market_pulse.model.Stock;
-
 /**
  * Демонстрация для практики с JOL (семинар 1): точные размеры объектов и
  * сравнение shallow size двух двумерных массивов разной формы.
