@@ -5,6 +5,7 @@ import academy.backend.market_pulse.model.Currency;
 import academy.backend.market_pulse.model.Etf;
 import academy.backend.market_pulse.model.Stock;
 
+// https://developer.tbank.ru/invest/api
 public class Main {
 
     public static void main(String[] args) {
