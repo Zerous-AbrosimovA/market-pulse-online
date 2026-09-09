@@ -28,5 +28,25 @@ public class JolDemo {
         // сравнить deep size обоих массивов через GraphLayout.parseInstance(...).toFootprint()
         // System.out.println(GraphLayout.parseInstance(small).toFootprint());
         // System.out.println(GraphLayout.parseInstance(large).toFootprint());
+
+        // System.out.println(ClassLayout.parseClass(Example.class).toPrintable());
+        // var instance = new Example(1, 2, new int[10], 3L, new Object());
+        // System.out.println(ClassLayout.parseInstance(instance).toPrintable());
+    }
+
+    public static class Example {
+        private final int a;
+        private final long b;
+        private final int[] array;
+        private final Long bObject;
+        private final Object reference;
+
+        public Example(int a, long b, int[] array, Long bObject, Object reference) {
+            this.a = a;
+            this.b = b;
+            this.array = array;
+            this.bObject = bObject;
+            this.reference = reference;
+        }
     }
 }
