@@ -2,20 +2,49 @@ package academy.backend.market_pulse.model;
 
 import java.math.BigDecimal;
 
+/**
+ * Рыночная котировка: инструмент + цена + изменение за период.
+ * Использует агрегацию, а не наследование от {@link Stock}.
+ */
 public class Quote {
 
-    private final Stock stock;
+    private final Instrument instrument;
     private final BigDecimal price;
+    private final BigDecimal changePercent;
 
-    public Quote(Stock stock, BigDecimal price) {
-        if (price.signum() <= 0) {
-            throw new IllegalArgumentException("Цена должна быть положительной");
-        }
-        this.stock = stock;
+    public Quote(Instrument instrument, BigDecimal price, BigDecimal changePercent) {
+        this.instrument = instrument;
         this.price = price;
+        this.changePercent = changePercent;
+    }
+
+    public Instrument getInstrument() {
+        return instrument;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public BigDecimal getChangePercent() {
+        return changePercent;
     }
 
     public BigDecimal getDividends() {
-        return stock.getDividends(price);
+        if (instrument instanceof Stock stock) {
+            return stock.getDividends(this.price);
+        }
+        return BigDecimal.ZERO;
+    }
+
+    @Override
+    public String toString() {
+        String direction = switch (changePercent.signum()) {
+            case 1 -> "^";
+            case -1 -> "";
+            default -> "-";
+        };
+        return instrument.getTicker() + ": " + price + " " + instrument.getCurrency()
+                + " " + direction + " " + changePercent.abs() + "%";
     }
 }

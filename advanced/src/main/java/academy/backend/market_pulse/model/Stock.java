@@ -1,21 +1,16 @@
 package academy.backend.market_pulse.model;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
-/**
- * Представляет акцию на фондовом рынке.
- * Класс описывает основные характеристики инструмента, в
- * ключая сектор экономики и доходность по дивидендам.
- */
 public class Stock extends Instrument {
 
     private final String sector;
-
-    // TODO: точно ли тут достаточно double?
-    private final double dividendYield;
+    // NOTICE: доходность и цена — всегда BigDecimal, не double (деньги).
+    private final BigDecimal dividendYield;
 
     public Stock(String ticker, String name, Currency currency,
-                 String sector, double dividendYield) {
+                 String sector, BigDecimal dividendYield) {
         super(ticker, name, currency);
         this.sector = sector;
         this.dividendYield = dividendYield;
@@ -25,18 +20,13 @@ public class Stock extends Instrument {
         return sector;
     }
 
-    public double getDividendYield() {
-        return dividendYield;
-    }
-
     @Override
     public String getDescription() {
         return "Акция, сектор: " + sector;
     }
 
-    public BigDecimal getDividends(BigDecimal price) {
-        return price.multiply(BigDecimal.valueOf(dividendYield))
-                .setScale(10, BigDecimal.ROUND_HALF_UP)
-                .divide(new BigDecimal("100"));
+    public BigDecimal getDividends(BigDecimal currentPrice) {
+        return currentPrice.multiply(dividendYield)
+                .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
     }
 }

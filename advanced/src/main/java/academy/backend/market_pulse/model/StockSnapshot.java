@@ -13,15 +13,18 @@ import java.math.BigDecimal;
 @Deprecated
 public class StockSnapshot extends Stock {
 
-    private final double price;
+    private final BigDecimal price;
 
     public StockSnapshot(String ticker, String name, Currency currency,
-                         String sector, double dividendYield, double price) {
+                         String sector, BigDecimal dividendYield, BigDecimal price) {
         super(ticker, name, currency, sector, dividendYield);
         this.price = price;
     }
 
+    // Перегружаем — удобно, цена уже вшита в объект.
+    // Но getDividends(BigDecimal) из Stock никуда не делся — какой из двух
+    // вызовет клиентский код, работающий со Stock, а не со StockSnapshot?
     public BigDecimal getDividends() {
-        return getDividends(BigDecimal.valueOf(price));
+        return getDividends(this.price);
     }
 }
