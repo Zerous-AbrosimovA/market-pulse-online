@@ -18,4 +18,8 @@ public class Etf extends Instrument {
         return trackingIndex;
     }
 
+    @Override
+    public String getDescription() {
+        return "ETF, индекс: " + trackingIndex;
+    }
 }

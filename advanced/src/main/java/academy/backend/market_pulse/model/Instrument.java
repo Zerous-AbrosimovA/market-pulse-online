@@ -34,8 +34,7 @@ public abstract class Instrument {
         return currency;
     }
 
-    // TODO №1: реализовать метод, возвращающий бизнесовое описание инструмента.
-    // TODO №2: реализовать метод, возвращающий дивиденды инструментов.
+    public abstract String getDescription();
 
     @Override
     public String toString() {

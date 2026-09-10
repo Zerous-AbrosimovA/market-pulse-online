@@ -1,5 +1,7 @@
 package academy.backend.market_pulse.model;
 
+import java.math.BigDecimal;
+
 /**
  * Наивная попытка представить акцию с ценой на конкретный момент времени —
  * через наследование от {@link Stock}. Не взлетает: {@code getDividends(BigDecimal)}
@@ -19,5 +21,7 @@ public class StockSnapshot extends Stock {
         this.price = price;
     }
 
-    // TODO: добавить метод для расчета дивидендов для текущей цены
+    public BigDecimal getDividends() {
+        return getDividends(BigDecimal.valueOf(price));
+    }
 }

@@ -1,5 +1,7 @@
 package academy.backend.market_pulse.model;
 
+import java.math.BigDecimal;
+
 /**
  * Представляет акцию на фондовом рынке.
  * Класс описывает основные характеристики инструмента, в
@@ -25,5 +27,16 @@ public class Stock extends Instrument {
 
     public double getDividendYield() {
         return dividendYield;
+    }
+
+    @Override
+    public String getDescription() {
+        return "Акция, сектор: " + sector;
+    }
+
+    public BigDecimal getDividends(BigDecimal price) {
+        return price.multiply(BigDecimal.valueOf(dividendYield))
+                .setScale(10, BigDecimal.ROUND_HALF_UP)
+                .divide(new BigDecimal("100"));
     }
 }

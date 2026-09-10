@@ -24,4 +24,9 @@ public class Bond extends Instrument {
     public int getMaturityYear() {
         return maturityYear;
     }
+
+    @Override
+    public String getDescription() {
+        return "Облигация, купон: " + couponRate + "%, погашение: " + maturityYear;
+    }
 }

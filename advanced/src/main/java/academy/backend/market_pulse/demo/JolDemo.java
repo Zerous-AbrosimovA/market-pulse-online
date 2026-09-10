@@ -1,5 +1,7 @@
 package academy.backend.market_pulse.demo;
 
+import org.openjdk.jol.info.ClassLayout;
+
 /**
  * Демонстрация для практики с JOL (семинар 1): точные размеры объектов и
  * сравнение shallow size двух двумерных массивов разной формы.
@@ -15,13 +17,13 @@ public class JolDemo {
         // System.out.println(ClassLayout.parseInstance(stock).toPrintable());
 
         // Сравниваем размеры двух массивов
-        // int[][] small = new int[10][1000];
-        // int[][] large = new int[1000][10];
+        int[][] small = new int[10][1000];
+        int[][] large = new int[1000][10];
 
-        // System.out.println("int[10][1000] shallow size:  "
-        //         + ClassLayout.parseInstance(small).instanceSize());
-        // System.out.println("int[1000][10] shallow size:  "
-        //         + ClassLayout.parseInstance(large).instanceSize());
+        System.out.println("int[10][1000] shallow size:  "
+                + ClassLayout.parseInstance(small).instanceSize());
+        System.out.println("int[1000][10] shallow size:  "
+                + ClassLayout.parseInstance(large).instanceSize());
 
         // GraphLayout покажет полный граф — попробуйте сами!
         // TODO: студентам предлагается самостоятельно раскомментировать и
@@ -29,9 +31,9 @@ public class JolDemo {
         // System.out.println(GraphLayout.parseInstance(small).toFootprint());
         // System.out.println(GraphLayout.parseInstance(large).toFootprint());
 
-        // System.out.println(ClassLayout.parseClass(Example.class).toPrintable());
-        // var instance = new Example(1, 2, new int[10], 3L, new Object());
-        // System.out.println(ClassLayout.parseInstance(instance).toPrintable());
+        System.out.println(ClassLayout.parseClass(Example.class).toPrintable());
+        var instance = new Example(1, 2, new int[10], 3L, new Object());
+        System.out.println(ClassLayout.parseInstance(instance).toPrintable());
     }
 
     public static class Example {
