@@ -3,42 +3,52 @@ package academy.backend.market_pulse;
 import academy.backend.market_pulse.model.Bond;
 import academy.backend.market_pulse.model.Currency;
 import academy.backend.market_pulse.model.Etf;
+import academy.backend.market_pulse.model.Instrument;
+import academy.backend.market_pulse.model.Portfolio;
+import academy.backend.market_pulse.model.PortfolioImpl;
 import academy.backend.market_pulse.model.Quote;
 import academy.backend.market_pulse.model.Stock;
-import academy.backend.market_pulse.model.StockSnapshot;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 // https://developer.tbank.ru/invest/api
 public class Main {
 
     public static void main(String[] args) {
-        Stock tbank = new Stock("SBER", "Сбербанк", Currency.RUB, "Financials", 6.5);
-        Bond ofz = new Bond("SU26238RMFS4", "ОФЗ-26238", Currency.RUB, 7.1, 2035);
+        Stock sber = new Stock("SBER", "Сбербанк", Currency.RUB, "Financials", new BigDecimal("6.5"));
+        Bond ofz = new Bond("SU26238RMFS4", "ОФЗ-26238", Currency.RUB, new BigDecimal("7.1"), 2035);
         Etf tmos = new Etf("TMOS", "Тинькофф iMOEX", Currency.RUB, "MOEX");
 
-        // TODO №1: вывести описание каждого инструмента
+        // Полиморфизм подтипов: getDescription() вызывается разный для каждого
+        // конкретного типа, хотя обращаемся мы к ним через общий тип Instrument.
+        List<Instrument> instruments = List.of(sber, ofz, tmos);
+        for (Instrument instrument : instruments) {
+            System.out.println(instrument.getDescription());
+        }
 
-        // TODO №2: достаточно ли double для хранения дивидендов?
-        var sberStockPrice = new BigDecimal("13.65");
-        var sberDividends = new BigDecimal("6.5");
-        var dividends = sberStockPrice.multiply(sberDividends)
-                .setScale(10, BigDecimal.ROUND_HALF_UP)
-                .divide(new BigDecimal("100"));
-        var dividends1 = new BigDecimal("0.887251");
-        System.out.println("Дивиденды SBER: " + dividends); // NOTICE: ожидается 0.88725
-        System.out.println(dividends1.compareTo(dividends));
+        // Quote — агрегация: одна и та же акция может быть частью любого числа
+        // котировок. getDividends() здесь корректен, т.к. цена уже известна.
+        Quote sberQuote = new Quote(sber, new BigDecimal("278.50"), new BigDecimal("1.2"));
+        System.out.println(sberQuote);
+        System.out.println("Дивиденды по котировке: " + sberQuote.getDividends());
 
-        var snapshot = new StockSnapshot("SBER", "Сбербанк", Currency.RUB, "Financials", 6.5, 13.65);
-        snapshot.getDividends(BigDecimal.TWO);
+        // Bond и Etf дивидендов не платят — Quote.getDividends() честно
+        // возвращает ZERO, не нарушая LSP (метод не объявлен в Instrument).
+        Quote ofzQuote = new Quote(ofz, new BigDecimal("980.00"), new BigDecimal("-0.3"));
+        System.out.println(ofzQuote);
+        System.out.println("Дивиденды по котировке: " + ofzQuote.getDividends());
 
-        var quote = new Quote(tbank, sberStockPrice);
-        quote.getDividends();
+        // Portfolio — композиция: Position создаётся и живёт только внутри портфеля.
+        Portfolio portfolio = new PortfolioImpl("Пенсия Серёжи");
+        portfolio.addPosition(sber, 10);
+        portfolio.addPosition(ofz, 5);
+        portfolio.addPosition(tmos, 3);
 
-        // TODO №3: обсудить сравнение числовых типов
-
-        // TODO №4: посчитать дивиденды для каждого инструмента?
-
-        // TODO №5: построить Quote для tbank и ofz, вывести котировки и дивиденды по ним.
+        System.out.println("Портфель: " + portfolio.getName());
+        for (Portfolio.Position position : portfolio.getPositions()) {
+            System.out.println("  " + position.getInstrument().getTicker()
+                    + " x " + position.getQuantity());
+        }
     }
 }
