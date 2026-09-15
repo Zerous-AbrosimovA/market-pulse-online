@@ -19,8 +19,8 @@ public class Stock extends Instrument implements DividendsAware {
     private final String sector;
 
     /**
-     * Дивидендная доходность в процентах — единственный числовой атрибут акции на этом этапе
-     * проекта, используется, в том числе, как «аналог цены» в фильтрации ({@code PriceFilter}).
+     * Дивидендная доходность в процентах — единственный числовой атрибут акции,
+     * используется, в том числе, как «аналог цены» в фильтрации ({@code PriceFilter}).
      */
     private final BigDecimal dividendYield;
 

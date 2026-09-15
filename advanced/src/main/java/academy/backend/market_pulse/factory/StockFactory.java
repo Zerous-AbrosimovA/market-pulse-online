@@ -15,8 +15,8 @@ public class StockFactory implements InstrumentFactory {
 
     @Override
     public Instrument create(String ticker, String name, Currency currency) {
-        // sector и dividendYield не собираются через CLI на этом этапе — значения по умолчанию,
-        // уточняются последующим редактированием инструмента в будущих семинарах.
+        // sector и dividendYield не собираются через CLI — используются значения по умолчанию,
+        // уточняются последующим редактированием инструмента.
         return new Stock(ticker, name, currency, "Unspecified", BigDecimal.ZERO);
     }
 }

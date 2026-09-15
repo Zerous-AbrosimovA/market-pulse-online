@@ -26,12 +26,33 @@ public final class ProxyFactory {
 
     public static InstrumentRepository timingRepository(Kind kind) {
         return switch (kind) {
-            case STATIC -> new TimingInstrumentRepository(new InMemoryInstrumentRepository());
+            case STATIC -> staticProxy();
             case JDK_DYNAMIC -> jdkDynamicProxy(new InMemoryInstrumentRepository());
             case CGLIB -> cglibProxy();
         };
     }
 
+    /**
+     * Статический прокси: класс {@link TimingInstrumentRepository} вручную реализует
+     * {@link InstrumentRepository} и оборачивает вызовы к целевому объекту.
+     *
+     * <p>Ограничения: нужен отдельный класс-обёртка на каждый оборачиваемый интерфейс.
+     * <p>Плюсы: полностью прозрачный код, никакой рефлексии, ошибки ловятся компилятором.
+     * <p>Минусы: много шаблонного кода; при изменении интерфейса обёртку нужно править вручную.
+     */
+    private static InstrumentRepository staticProxy() {
+        return new TimingInstrumentRepository(new InMemoryInstrumentRepository());
+    }
+
+    /**
+     * JDK-прокси на основе {@link Proxy} и обработчика вызовов ({@code InvocationHandler}).
+     *
+     * <p>Ограничения: проксировать можно только интерфейсы — у целевого объекта должен быть
+     * хотя бы один интерфейс, проксировать конкретный класс без интерфейса нельзя.
+     * <p>Плюсы: входит в стандартную библиотеку (без сторонних зависимостей), один обработчик
+     * закрывает сразу все методы интерфейса.
+     * <p>Минусы: каждый вызов идёт через рефлексию ({@code Method.invoke}) — медленнее прямого.
+     */
     private static InstrumentRepository jdkDynamicProxy(InstrumentRepository target) {
         return (InstrumentRepository) Proxy.newProxyInstance(
                 InstrumentRepository.class.getClassLoader(),
@@ -44,6 +65,16 @@ public final class ProxyFactory {
                 });
     }
 
+    /**
+     * CGLIB-прокси: {@link Enhancer} генерирует на лету подкласс
+     * {@link InMemoryInstrumentRepository} и перехватывает вызовы его методов.
+     *
+     * <p>Ограничения: целевой класс и переопределяемые методы не должны быть {@code final};
+     * у класса должен быть доступный конструктор без аргументов.
+     * <p>Плюсы: можно проксировать конкретный класс без интерфейса; после генерации подкласса
+     * вызовы быстрее, чем через reflection JDK-прокси.
+     * <p>Минусы: дополнительная зависимость (cglib), сгенерированный байткод сложнее отлаживать.
+     */
     private static InstrumentRepository cglibProxy() {
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(InMemoryInstrumentRepository.class);

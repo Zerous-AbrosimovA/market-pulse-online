@@ -16,7 +16,7 @@ public class BondFactory implements InstrumentFactory {
 
     @Override
     public Instrument create(String ticker, String name, Currency currency) {
-        // couponRate и maturityYear не собираются через CLI на этом этапе — значения по умолчанию.
+        // couponRate и maturityYear не собираются через CLI — используются значения по умолчанию.
         return new Bond(ticker, name, currency, BigDecimal.ZERO, Year.now().getValue());
     }
 }

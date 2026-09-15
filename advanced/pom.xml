@@ -24,7 +24,7 @@
             <artifactId>jol-core</artifactId>
             <version>0.17</version>
         </dependency>
-        <!-- Lombok: сопроводительный материал семинара 1 — можно использовать начиная со следующего семинара -->
+        <!-- Lombok: генерация геттеров, сеттеров и конструкторов во время компиляции -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
