@@ -1,11 +1,11 @@
 package academy.backend.market_pulse.cli;
 
-import java.util.concurrent.Callable;
-
 import academy.backend.market_pulse.repository.InstrumentRepository;
 import lombok.RequiredArgsConstructor;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
+
+import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
 @Command(name = "list", description = "Список инструментов")
@@ -16,6 +16,9 @@ public class ListCommand implements Callable<Integer> {
 
     private final InstrumentRepository repository;
 
+    /**
+     * See {@link academy.backend.market_pulse.filter.InstrumentFilter}!
+     */
     @Override
     public Integer call() {
         // TODO: реализовать отбор по функциональным требованиям из Javadoc InstrumentFilter
