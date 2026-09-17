@@ -1,14 +1,20 @@
-package academy.backend.market_pulse.factory;
-
-import java.math.BigDecimal;
+package academy.backend.market_pulse.factory.impl;
 
 import academy.backend.market_pulse.dictionary.InstrumentType;
+import academy.backend.market_pulse.factory.InstrumentFactory;
+import academy.backend.market_pulse.factory.StaticInstrumentFactories;
 import academy.backend.market_pulse.model.Currency;
 import academy.backend.market_pulse.model.Instrument;
 import academy.backend.market_pulse.model.Stock;
 import lombok.Getter;
 
+import java.math.BigDecimal;
+
 public class StockFactory implements InstrumentFactory {
+
+    static {
+        StaticInstrumentFactories.register(new StockFactory());
+    }
 
     @Getter
     private final InstrumentType type = InstrumentType.STOCK;
