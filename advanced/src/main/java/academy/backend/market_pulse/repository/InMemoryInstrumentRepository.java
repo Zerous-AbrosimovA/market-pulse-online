@@ -1,9 +1,9 @@
 package academy.backend.market_pulse.repository;
 
-import academy.backend.market_pulse.model.Instrument;
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import academy.backend.market_pulse.model.Instrument;
 
 /**
  * Реализация {@link InstrumentRepository} поверх внутреннего массива фиксированного размера.
@@ -18,7 +18,6 @@ public class InMemoryInstrumentRepository implements InstrumentRepository {
         instruments[size++] = instrument;
     }
 
-    // NOTICE: forEach работает только благодаря реализации паттерна Iterator
     @Override
     public Instrument findByTicker(String ticker) {
         for (Instrument instrument : this) {
@@ -26,10 +25,12 @@ public class InMemoryInstrumentRepository implements InstrumentRepository {
                 return instrument;
             }
         }
+        // NOTICE: null здесь — единственный способ сказать «не нашли», и вызывающий код
+        // должен не забыть это проверить. Сегодня посмотрим, что с этим можно сделать.
+        // TODO: поменять на Optional!
         return null;
     }
 
-    // NOTICE: пример реализации паттерна Iterator с помощью интерфейса
     @Override
     public Iterator<Instrument> iterator() {
         return new Iterator<>() {
