@@ -35,18 +35,6 @@ public final class ListFilterBuilder {
     public ListFilterBuilder byCurrency(Currency currency) {
         if (currency != null) {
             filter = filter.and(instrument -> instrument.getCurrency() == currency);
-
-            // NOTICE: для сравнения байт-кода — та же самая проверка, написанная через анонимный
-            // класс вместо лямбды. Чтобы увидеть разницу — закомментировать лямбду выше,
-            // раскомментировать блок ниже, скомпилировать (javac) и найти в каталоге сборки новый
-            // файл ListFilterBuilder$1.class, которого для лямбды не появляется.
-            //
-            // filter = filter.and(new Predicate<Instrument>() {
-            //     @Override
-            //     public boolean test(Instrument instrument) {
-            //         return instrument.getCurrency() == currency;
-            //     }
-            // });
         }
         return this;
     }

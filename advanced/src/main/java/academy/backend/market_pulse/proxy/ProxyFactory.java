@@ -43,7 +43,7 @@ public final class ProxyFactory {
      * <p>Минусы: много шаблонного кода; при изменении интерфейса обёртку нужно править вручную.
      */
     private static InstrumentRepository staticProxy() {
-        return new TimingInstrumentRepository(new InMemoryInstrumentRepository());
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -87,45 +87,5 @@ public final class ProxyFactory {
             return result;
         });
         return (InstrumentRepository) enhancer.create();
-    }
-
-    /**
-     * Самописный (статический) прокси.
-     */
-    private static final class TimingInstrumentRepository implements InstrumentRepository {
-
-        private final InstrumentRepository target;
-
-        private TimingInstrumentRepository(InstrumentRepository target) {
-            this.target = target;
-        }
-
-        @Override
-        public void add(Instrument instrument) {
-            long start = System.nanoTime();
-            target.add(instrument);
-            System.out.printf("add() выполнен за %d нс%n", System.nanoTime() - start);
-        }
-
-        @Override
-        public Instrument findByTicker(String ticker) {
-            long start = System.nanoTime();
-            Instrument result = target.findByTicker(ticker);
-            System.out.printf("findByTicker() выполнен за %d нс%n", System.nanoTime() - start);
-            return result;
-        }
-
-        @Override
-        public Iterator<Instrument> iterator() {
-            return instrument("iterator", target::iterator);
-        }
-
-        @SneakyThrows
-        private <R> R instrument(String key, Callable<R> action) {
-            long start = System.nanoTime();
-            var result = action.call();
-            System.out.printf("iterator() выполнен за %d нс%n", System.nanoTime() - start);
-            return result;
-        }
     }
 }

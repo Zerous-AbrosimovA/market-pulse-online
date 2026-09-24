@@ -1,13 +1,11 @@
 package academy.backend.market_pulse.repository;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-
 import academy.backend.market_pulse.model.Instrument;
 
-/**
- * Реализация {@link InstrumentRepository} поверх внутреннего массива фиксированного размера.
- */
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
 public class InMemoryInstrumentRepository implements InstrumentRepository {
 
     private final Instrument[] instruments = new Instrument[100];
@@ -19,16 +17,13 @@ public class InMemoryInstrumentRepository implements InstrumentRepository {
     }
 
     @Override
-    public Instrument findByTicker(String ticker) {
+    public Optional<Instrument> findByTicker(String ticker) {
         for (Instrument instrument : this) {
             if (instrument.getTicker().equalsIgnoreCase(ticker)) {
-                return instrument;
+                return Optional.of(instrument);
             }
         }
-        // NOTICE: null здесь — единственный способ сказать «не нашли», и вызывающий код
-        // должен не забыть это проверить. Сегодня посмотрим, что с этим можно сделать.
-        // TODO: поменять на Optional!
-        return null;
+        return Optional.empty();
     }
 
     @Override

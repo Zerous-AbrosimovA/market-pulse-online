@@ -3,8 +3,10 @@ package academy.backend.market_pulse.util;
 import academy.backend.market_pulse.dictionary.sort.SortField;
 import academy.backend.market_pulse.dictionary.sort.SortOrder;
 import academy.backend.market_pulse.model.Instrument;
+import academy.backend.market_pulse.model.Stock;
 import lombok.experimental.UtilityClass;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -22,8 +24,21 @@ public final class InstrumentSortingUtils {
      * (дивидендной доходности акции).
      */
     public static Comparator<Instrument> comparator(SortField field, SortOrder order) {
-        // TODO: реализовать сортировку согласно бизнес-логике
-        throw new UnsupportedOperationException();
+        Comparator<Instrument> comparator = switch (field) {
+            case TICKER -> Comparator.comparing(Instrument::getTicker);
+            case CURRENCY -> Comparator.comparing(Instrument::getCurrency);
+            case PRICE -> Comparator.comparing(InstrumentSortingUtils::dividendYieldOrZero);
+        };
+        return order == SortOrder.DESC ? comparator.reversed() : comparator;
+    }
+
+    /**
+     * Дивидендная доходность акции как «аналог цены» (см. {@code ListFilterBuilder}) — для
+     * {@code Bond}/{@code Etf}, у которых цены нет, используется ноль, чтобы они не выпадали
+     * из сортировки, а вставали в её начало.
+     */
+    private static BigDecimal dividendYieldOrZero(Instrument instrument) {
+        return instrument instanceof Stock stock ? stock.getDividendYield() : BigDecimal.ZERO;
     }
 
     /**

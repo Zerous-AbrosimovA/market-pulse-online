@@ -33,6 +33,7 @@ import academy.backend.market_pulse.model.Instrument;
  * list --price-op GE --price 10     // акции с дивидендной доходностью >= 10
  * }</pre>
  */
+@FunctionalInterface
 public interface InstrumentFilter {
 
     boolean matches(Instrument instrument);
