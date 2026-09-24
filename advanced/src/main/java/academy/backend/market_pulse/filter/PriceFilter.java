@@ -9,7 +9,7 @@ import java.math.BigDecimal;
  * Отбор по цене — применим только к {@link Stock}: остальные типы инструментов сегодня не несут
  * числового значения цены, поэтому для них {@code matches} всегда возвращает {@code false}. В
  * роли цены — дивидендная доходность ({@link Stock#getDividendYield()}), единственный числовой
- * атрибут акции на этом этапе проекта.
+ * атрибут акции.
  */
 public class PriceFilter implements InstrumentFilter {
 

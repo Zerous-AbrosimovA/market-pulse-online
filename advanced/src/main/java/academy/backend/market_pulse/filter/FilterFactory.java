@@ -10,7 +10,7 @@ import java.math.BigDecimal;
  * Выбор конкретного {@link InstrumentFilter} по критериям, переданным из CLI. Критерии
  * взаимоисключающие: одновременно задаётся не больше одного — по типу, по тикеру, по валюте
  * или по цене. Комбинирование нескольких критериев сразу — задача паттерна Chain of
- * Responsibility, за рамками этого семинара.
+ * Responsibility, здесь не реализована.
  */
 @UtilityClass
 public final class FilterFactory {

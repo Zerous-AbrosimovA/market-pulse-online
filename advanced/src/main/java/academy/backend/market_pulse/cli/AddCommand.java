@@ -1,21 +1,22 @@
 package academy.backend.market_pulse.cli;
 
+import java.util.concurrent.Callable;
+
 import academy.backend.market_pulse.dictionary.InstrumentType;
 import academy.backend.market_pulse.factory.InstrumentFactories;
 import academy.backend.market_pulse.model.Currency;
+import academy.backend.market_pulse.model.Instrument;
 import academy.backend.market_pulse.repository.InstrumentRepository;
 import lombok.RequiredArgsConstructor;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 
-import java.util.concurrent.Callable;
-
-@RequiredArgsConstructor
 @Command(name = "add", description = "Добавление инструмента в репозиторий")
+@RequiredArgsConstructor
 public class AddCommand implements Callable<Integer> {
 
     @Parameters(index = "0", description = "Тип инструмента (STOCK, BOND, ETF)")
-    private String type;
+    private InstrumentType type;
 
     @Parameters(index = "1", description = "Тикер инструмента")
     private String ticker;
@@ -30,9 +31,8 @@ public class AddCommand implements Callable<Integer> {
 
     @Override
     public Integer call() {
-        var instrument = InstrumentFactories.create(InstrumentType.valueOf(type), ticker, name, currency);
+        var instrument = InstrumentFactories.create(type, ticker, name, currency);
         repository.add(instrument);
-        return 1;
+        return 0;
     }
-
 }
