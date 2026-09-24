@@ -11,8 +11,8 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * Generics, bounded types и wildcard (см. «План семинара.md», семинар 3, этап 3).
- * Демонстрирует {@code ? super T}: компаратор для {@link Instrument} принимается там, где
+ * Generics, bounded types и wildcard. Демонстрирует {@code ? super T}: компаратор для
+ * {@link Instrument} принимается там, где
  * ожидается компаратор для {@link Stock} — {@code List<Stock>} не является подтипом
  * {@code List<Instrument>}, но {@code Comparator<? super Stock>} это позволяет.
  *
@@ -20,8 +20,8 @@ import java.util.List;
  * {@code <T, U extends Comparable<? super U>> Comparator<T> comparing(Function<? super T, ? extends U> keyExtractor)}
  * сам выводит {@code U} по типу, который возвращает key extractor, и требует от этого типа быть
  * {@code Comparable} — компилятор не даст передать метод, возвращающий несравнимый тип. Практическое
- * применение того же приёма — сортировка вывода {@code list} (см. этап 5,
- * {@link InstrumentSortingUtils#comparator}).
+ * применение того же приёма — сортировка вывода {@code list}
+ * ({@link InstrumentSortingUtils#comparator}).
  */
 public class GenericsDemo {
 
