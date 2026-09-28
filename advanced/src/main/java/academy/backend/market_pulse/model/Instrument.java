@@ -19,6 +19,12 @@ public abstract class Instrument implements InstrumentTypeAware {
         if (ticker == null || ticker.isBlank()) {
             throw new IllegalArgumentException("Ticker cannot be blank");
         }
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Название инструмента не может быть пустым");
+        }
+        if (currency == null) {
+            throw new IllegalArgumentException("Валюта инструмента обязательна");
+        }
         this.ticker = ticker;
         this.name = name;
         this.currency = currency;

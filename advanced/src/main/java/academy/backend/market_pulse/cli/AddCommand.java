@@ -5,7 +5,6 @@ import java.util.concurrent.Callable;
 import academy.backend.market_pulse.dictionary.InstrumentType;
 import academy.backend.market_pulse.factory.InstrumentFactories;
 import academy.backend.market_pulse.model.Currency;
-import academy.backend.market_pulse.model.Instrument;
 import academy.backend.market_pulse.repository.InstrumentRepository;
 import lombok.RequiredArgsConstructor;
 import picocli.CommandLine.Command;
@@ -31,8 +30,10 @@ public class AddCommand implements Callable<Integer> {
 
     @Override
     public Integer call() {
+        // TODO: обернуть в try/catch
         var instrument = InstrumentFactories.create(type, ticker, name, currency);
         repository.add(instrument);
+        System.out.println("Добавлено: " + instrument.getDescription());
         return 0;
     }
 }

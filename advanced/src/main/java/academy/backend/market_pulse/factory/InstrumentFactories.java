@@ -6,10 +6,6 @@ import academy.backend.market_pulse.model.Instrument;
 import academy.backend.market_pulse.util.Registry;
 import lombok.experimental.UtilityClass;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ServiceLoader;
-
 /**
  * Фабрика, реализованная с помощью SPI.
  */
@@ -23,10 +19,13 @@ public final class InstrumentFactories {
         if (factory == null) {
             throw new IllegalArgumentException("Unknown instrument type: " + type);
         }
+        // TODO: прогнать instrument через InstrumentValidator и бросить InvalidInstrumentException
+        //  при нарушении бизнес-правил — валидируем уже созданную сущность, а не входные параметры.
         return factory.create(ticker, name, currency);
     }
 
     private static Registry<InstrumentType, InstrumentFactory> load() {
-        return new Registry<>(InstrumentFactory::getType);
+        return new Registry<>(InstrumentFactory::getType) {
+        };
     }
 }

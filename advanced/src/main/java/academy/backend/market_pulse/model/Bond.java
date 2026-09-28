@@ -4,6 +4,7 @@ import academy.backend.market_pulse.dictionary.InstrumentType;
 import lombok.Getter;
 
 import java.math.BigDecimal;
+import java.time.Year;
 
 /**
  * Облигация — долговая ценная бумага: эмитент занимает деньги у владельца облигации
@@ -20,6 +21,12 @@ public class Bond extends Instrument {
     public Bond(String ticker, String name, Currency currency,
                 BigDecimal couponRate, int maturityYear) {
         super(ticker, name, currency);
+        if (couponRate == null || couponRate.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException("Купонная ставка не может быть отрицательной");
+        }
+        if (maturityYear < Year.now().getValue()) {
+            throw new IllegalArgumentException("Год погашения не может быть в прошлом");
+        }
         this.couponRate = couponRate;
         this.maturityYear = maturityYear;
     }
