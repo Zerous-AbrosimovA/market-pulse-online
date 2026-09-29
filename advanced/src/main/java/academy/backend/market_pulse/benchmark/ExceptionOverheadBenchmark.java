@@ -32,7 +32,9 @@ import java.util.concurrent.TimeUnit;
  * Отдельный JMH-плагин IntelliJ IDEA или ручная сборка jar не нужны — оба варианта тоже работают,
  * но {@code main()} проще и ничего дополнительного не требует.
  *
- * <p>Прогон занимает около минуты: 4 бенчмарка × (5 итераций прогрева + 5 замеров) × 1 секунда.
+ * <p>Прогон занимает пару минут: 6 бенчмарков × (5 итераций прогрева + 5 замеров) × 1 секунда, плюс
+ * запуск отдельной JVM на каждый форк (у двух последних бенчмарков — свой форк с явным
+ * {@code -XX:±OmitStackTraceInFastThrow}, см. NOTICE у {@code implicitExceptionOmitEnabled()}).
  *
  * @see <a href="https://www.baeldung.com/java-microbenchmark-harness">Baeldung: JMH</a>
  */
@@ -103,6 +105,36 @@ public class ExceptionOverheadBenchmark {
     static class FastValidationException extends RuntimeException {
         FastValidationException(String message) {
             super(message, null, false, false); // enableSuppression=false, writableStackTrace=false
+        }
+    }
+
+    // NOTICE: OmitStackTraceInFastThrow — оптимизация JIT (C2), а не общий механизм для любых
+    // исключений. Она касается только пяти implicit-исключений, которые сама JVM порождает при
+    // провале байт-код инструкции (NullPointerException, ArithmeticException,
+    // ArrayIndexOutOfBoundsException, ArrayStoreException, ClassCastException) — и не касается
+    // ничего, что брошено явно через throw new (как throwWithStackTrace() выше). Поэтому здесь —
+    // честный ArrayIndexOutOfBoundsException от выхода за границы массива, а не throw new
+    // ArrayIndexOutOfBoundsException(...): последнее исключение из-под оптимизации выпадает точно
+    // так же, как IllegalArgumentException, и разницы между двумя бенчмарками не покажет.
+    private static final int[] EMPTY_ARRAY = new int[0];
+
+    @Benchmark
+    @Fork(jvmArgsAppend = "-XX:+OmitStackTraceInFastThrow")
+    public int implicitExceptionOmitEnabled() {
+        try {
+            return EMPTY_ARRAY[0];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return -1;
+        }
+    }
+
+    @Benchmark
+    @Fork(jvmArgsAppend = "-XX:-OmitStackTraceInFastThrow")
+    public int implicitExceptionOmitDisabled() {
+        try {
+            return EMPTY_ARRAY[0];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return -1;
         }
     }
 }

@@ -38,13 +38,37 @@
 измерениях выше, только включается сама и незаметно для разработчика.
 
 Но область действия у неё узкая — это касается только пяти **implicit**-исключений, которые сама JVM генерирует
-при провале байт-код инструкции (а не тех, что созданы через `new` и брошены явно): `NullPointerException`,
-`ArithmeticException`, `ArrayIndexOutOfBoundsException`, `ArrayStoreException`, `ClassCastException`. Именно
-поэтому она не имеет отношения к результатам в этом файле: `IllegalArgumentException` в `throwWithStackTrace` и
-`throwWithTry` создаётся и бросается явно (`throw new IllegalArgumentException(...)`), а не порождается самой JVM
-при провале байт-код инструкции — под действие `OmitStackTraceInFastThrow` такие исключения не попадают ни при
-какой «нагретости» кода.
+при провале байт-код инструкции, а не тех, что созданы через `new` и брошены явно:
+
+1. `NullPointerException`
+2. `ArithmeticException`
+3. `ArrayIndexOutOfBoundsException`
+4. `ArrayStoreException`
+5. `ClassCastException`
+
+Именно поэтому она не имеет отношения к результатам в первой таблице: `IllegalArgumentException` в
+`throwWithStackTrace` и `throwWithTry` создаётся и бросается явно (`throw new IllegalArgumentException(...)`), а
+не порождается самой JVM при провале байт-код инструкции — под действие `OmitStackTraceInFastThrow` такие
+исключения не попадают ни при какой «нагретости» кода.
 
 Отсюда и разница с `writableStackTrace = false` из `FastValidationException`: это явный, детерминированный способ
 отключить сбор трассировки для **любого** своего исключения, работающий всегда, а не только после прогрева и не
 только для пятёрки встроенных типов.
+
+### Демонстрация на настоящем implicit-исключении
+
+Чтобы увидеть эффект флага, нужно честное `ArrayIndexOutOfBoundsException` от выхода за границы массива (а не
+`throw new ArrayIndexOutOfBoundsException(...)` — это уже explicit-бросок, под оптимизацию не попадает). Один и
+тот же код запущен в двух форках с разными JVM-опциями:
+
+| Benchmark                       | Mode | Cnt |    Score |   Error | Units | JVM-опция                                  |
+|---------------------------------|------|-----|---------:|--------:|-------|--------------------------------------------|
+| `implicitExceptionOmitEnabled`  | avgt | 3   |    0,419 |   0,042 | ns/op | `-XX:+OmitStackTraceInFastThrow` (default) |
+| `implicitExceptionOmitDisabled` | avgt | 3   | 3254,204 | 179,800 | ns/op | `-XX:-OmitStackTraceInFastThrow`           |
+
+Разница — почти **в 7770 раз**. С включённой оптимизацией implicit-исключение на горячем месте обходится
+практически бесплатно (0,42 нс — на уровне `returnCode`), с выключенной — на порядок дороже даже explicit-броска
+`IllegalArgumentException` из первой таблицы (3254 нс против 674–722 нс). Разумное объяснение разницы именно с
+explicit-случаем: implicit-исключение возникает в самом горячем, часто инлайнируемом месте (индексация массива),
+и без preallocated-объекта JVM на каждый такой бросок собирает трассировку заново — там, где без выключенного
+флага она бы вообще не собиралась.
