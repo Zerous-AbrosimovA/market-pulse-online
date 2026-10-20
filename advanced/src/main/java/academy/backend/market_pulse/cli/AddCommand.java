@@ -38,11 +38,15 @@ public class AddCommand implements Callable<Integer> {
             repository.add(instrument);
             System.out.println("Добавлено: " + instrument.getDescription());
             return 0;
-        } catch (DuplicateTickerException | InvalidInstrumentException | UnsupportedInstrumentException e) {
+        } catch (UnsupportedInstrumentException e) {
             // NOTICE: реакция на все три ошибки одинаковая (сообщить пользователю и вернуть код
             //  ошибки), поэтому один multi-catch, а не три одинаковых блока.
-            System.out.println("Не удалось добавить инструмент: " + e.getMessage());
-            return 1;
+            System.out.println("Выбран неподдерживаемый инструмент: " + e.getMessage());
+        } catch (DuplicateTickerException e) {
+            System.out.println("Выбранный тиккер уже существует: " + e.getMessage());
+        } catch (InvalidInstrumentException e) {
+            System.out.println("Выбран неверный инструмент: " + e.getMessage());
         }
+        return 1;
     }
 }
